@@ -35,51 +35,34 @@ void ColisionAvoidanceNeuralNetworkThread::unlockMutex() { myMutex.unlock(); }
 
 void ColisionAvoidanceNeuralNetworkThread::tratamentoRna()
 {
-    // Variável estática para rastrear o tempo desde o último comando. 
-    // É estática para manter o valor entre chamadas da função.
-    static time_t ultima_acao_tempo = time(NULL);
-    const int LIMITE_STALL = 5; // 5 segundos
-
-    if(robo->robot.isHeadingDone() && robo->robot.isMoveDone()) 
+    if(robo->robot.isHeadingDone() && robo->robot.isMoveDone())
     {
-        // VERIFICAÇÃO DO FAIL-SAFE:
-        // Se o robô estiver parado (MoveDone e HeadingDone) por mais de 5 segundos
-        if (std::difftime(time(NULL), ultima_acao_tempo) > LIMITE_STALL)
-        {
-            printf("\n*** FAIL-SAFE ATIVADO: ROBÔ PRESO POR > %ds. DANDO RÉ! ***\n", LIMITE_STALL);
-            // Força o robô a dar ré por 1 segundo e reseta o timer
-            robo->Move(-VELOCIDADEDESLOCAMENTO, -VELOCIDADEDESLOCAMENTO);
-            ArUtil::sleep(1000); // Dá tempo para o robô sair do canto
-            ultima_acao_tempo = time(NULL); // Reseta o timer
-            return; // Sai da função para que o comando de ré seja executado
-        }
-        
-        // Lógica da Rede Neural (executada somente se o robô não estiver em stall)
         ExpectedMovement movement =  neuralNetwork->definirAcao(sonar[0], sonar[1], sonar[2], sonar[3], sonar[4], sonar[5], sonar[6], sonar[7]);
-        printf("\nDirecaoRotacaoProcessada %f DirecaoMovimento %f AnguloRotacao %f", movement.DirecaoRotacaoProcessada, movement.DirecaoMovimento, movement.AnguloRotacao);
+        
+        // Processar os valores para que DirecaoRotacaoProcessada seja 1, 2 ou 0
         movement.ProcessarMovimento(); 
-        printf("\nDirecaoRotacao %f DirecaoMovimentoProcessada %f AnguloRotacaoProcessado %f", movement.DirecaoRotacao, movement.DirecaoMovimentoProcessada, movement.AnguloRotacaoProcessado);
 
-        if(movement.DirecaoRotacaoProcessada == 999 || movement.AnguloRotacaoProcessado == 999 || movement.DirecaoMovimentoProcessada == 999)
+        printf("\nDirecaoRotacao %f DirecaoMovimentoProcessada %f AnguloRotacaoProcessado %f", 
+               movement.DirecaoRotacao, movement.DirecaoMovimentoProcessada, movement.AnguloRotacaoProcessado);
+
+        if(movement.DirecaoRotacaoProcessada == -999 || movement.AnguloRotacaoProcessado == -999 || movement.DirecaoMovimentoProcessada == -999)
         {
             robo->pararMovimento();
         }
         else
         {
-            // Lógica de execução RN (prioriza Move se Angulo=0, senão Rotaciona)
-            if(movement.AnguloRotacaoProcessado == 0)
+            // Se DirecaoRotacaoProcessada é 0 (Frente), ele apenas move.
+            if(movement.DirecaoRotacaoProcessada == 0) 
             {
+                // Move: Usa a velocidade/direção linear
                 robo->Move(movement.DirecaoMovimentoProcessada, movement.DirecaoMovimentoProcessada);
             }
             else
             {
-                 robo->Rotaciona(movement.AnguloRotacaoProcessado, movement.DirecaoMovimentoProcessada, VELOCIDADEROTACAO);
+                // Rotaciona: Usa a DIREÇÃO DE ROTAÇÃO (1 ou 2) no campo Sentido.
+                // movement.DirecaoMovimentoProcessada é a VELOCIDADE DE DESLOCAMENTO (100 ou -100).
+                robo->Rotaciona(movement.AnguloRotacaoProcessado, (int)movement.DirecaoRotacaoProcessada, VELOCIDADEROTACAO);
             }
         }
-        
-        // Se a RN emitiu um comando de movimento válido, resetamos o timer
-        ultima_acao_tempo = time(NULL);
     }
-    // Se o robô estiver em movimento, o timer não é checado nem resetado.
 }
-

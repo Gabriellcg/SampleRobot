@@ -36,16 +36,15 @@ int main(int argc, char **argv)
 
 
     //prático
-    //ArLog::log(ArLog::Normal, "Colision Avoidance thread ...");
-    //colisionAvoidanceThread.runAsync();
+    ArLog::log(ArLog::Normal, "Colision Avoidance thread ...");
+    colisionAvoidanceThread.runAsync();
 
     // ArLog::log(ArLog::Normal, "Wall Following thread ...");
     // wallFollowerThread.runAsync();
 
     //treinamento
-
-     ArLog::log(ArLog::Normal, "Colision Avoidance Neural Network thread ...");
-     colisionAvoidanceNeuralNetworkThread.runAsync();
+    //ArLog::log(ArLog::Normal, "Colision Avoidance Neural Network thread ...");
+    //colisionAvoidanceNeuralNetworkThread.runAsync();
     //--
 
 
