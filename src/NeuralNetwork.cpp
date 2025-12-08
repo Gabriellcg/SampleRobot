@@ -238,7 +238,7 @@ int NeuralNetwork::treinoInicialRede()
         {
             printf("Treinamento encerrado com sucesso, segue o resultado prelimira:");
             PrintarValores();
-            this->salvarPesos("pesos_finais.txt"); // <-- AGORA SALVA AQUI!
+            this->salvarPesos("pesos_finais.txt");// gera o arquivo .txt
             return CiclosDeTreinamento;
         }
     }
@@ -246,9 +246,9 @@ int NeuralNetwork::treinoInicialRede()
     printf("\nCiclosDeTreinamento: %ld  Error: %f \n\n", CiclosDeTreinamento, Error);
     PrintarValores();
     printf("Treinamento concluido! \n\n");
-    this->salvarPesos("pesos_finais.txt"); // <-- AGORA SALVA AQUI!
+    this->salvarPesos("pesos_finais.txt"); // gera o arquivo .txt
     IntervaloTreinamentosPrintTela = 1;
-    return 0; // Adicionando retorno para garantir que a função seja encerrada.
+    return 0;
 }
 
 void NeuralNetwork::PrintarValores()
