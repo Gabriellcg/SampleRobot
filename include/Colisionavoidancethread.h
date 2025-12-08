@@ -6,11 +6,6 @@
 #include "Config.h"
 #include "NeuralNetwork.h"  // <-- ESSENCIAL: Para as constantes OUT_...
 
-// 2. INCLUSÕES DESNECESSÁRIAS/PROBLEMÁTICAS (REMOVIDAS):
-// #include "Colisionavoidancethread.h" <-- Causaria inclusão infinita
-// #include <iostream>                  <-- Não necessário em arquivos .h
-// class PioneerRobot                   <-- Sintaxe incorreta e desnecessária
-
 class ColisionAvoidanceThread : public ArASyncTask
 {
 public:
