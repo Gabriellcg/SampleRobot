@@ -15,39 +15,44 @@ int main(int argc, char **argv)
 {
     int sucesso;
 
+    // Inicialização do robô e da rede neural
     robo = new PioneerRobot(ConexaoSimulacao, "", &sucesso);
     neuralNetwork = new NeuralNetwork();
 
-    ArLog::log(ArLog::Normal, "Criando as theads...");
-    ColisionAvoidanceThread colisionAvoidanceThread(robo);
-    ColisionAvoidanceNeuralNetworkThread colisionAvoidanceNeuralNetworkThread(robo, neuralNetwork); // <<--- DECLARAÇÃO CORRETA
+    ArLog::log(ArLog::Normal, "Criando as threads...");
+
+    // Threads disponíveis
+    ColisionAvoidanceThread colisionAvoidanceThread(robo);  // ← NÃO SERÁ USADA
+    ColisionAvoidanceNeuralNetworkThread colisionAvoidanceNeuralNetworkThread(robo, neuralNetwork); // ← USADA
     WallFollowerThread wallFollowerThread(robo);
     SonarThread sonarReadingThread(robo); 
     // LaserThread laserReadingThread(robo);
 
-
-    //Sensor reading threads
+    // THREAD DE LEITURA DO SONAR
     ArLog::log(ArLog::Normal, "Sonar Readings thread ...");
     sonarReadingThread.runAsync();
 
     // ArLog::log(ArLog::Normal, "Laser Readings thread ...");
     // laserReadingThread.runAsync();
-    //--
 
-
-    //prático
-    ArLog::log(ArLog::Normal, "Colision Avoidance thread ...");
-    colisionAvoidanceThread.runAsync();
+    // ---------------------------
+    // DESATIVA qualquer controle NÃO neural
+    // ---------------------------
+    // ArLog::log(ArLog::Normal, "Colision Avoidance thread ...");
+    // colisionAvoidanceThread.runAsync();
 
     // ArLog::log(ArLog::Normal, "Wall Following thread ...");
     // wallFollowerThread.runAsync();
 
-    //treinamento
-    //ArLog::log(ArLog::Normal, "Colision Avoidance Neural Network thread ...");
-    //colisionAvoidanceNeuralNetworkThread.runAsync();
-    //--
 
+    // ---------------------------
+    // ATIVA CONTROLE VIA REDE NEURAL
+    // ---------------------------
+    ArLog::log(ArLog::Normal, "Colision Avoidance Neural Network thread ...");
+    colisionAvoidanceNeuralNetworkThread.runAsync();
+    // ---------------------------
 
+    // Aguarda terminar
     robo->robot.waitForRunExit();
 
     Aria::exit(0);
