@@ -10,31 +10,45 @@ ExpectedMovement::ExpectedMovement(float _direcaoRotacao, float _direcaoMoviment
 
 void ExpectedMovement::ProcessarMovimento()
 {
-    if (this->DirecaoRotacao >= 0.125 && this->DirecaoRotacao < 0.375)//Direita
-       this->DirecaoRotacaoProcessada = 2; //Girar para a direita
-    else if (this->DirecaoRotacao >= 0.375 && this->DirecaoRotacao < 0.625)//Esquerda
-       this->DirecaoRotacaoProcessada = 1; //Girar para a esquerda
-    else if (this->DirecaoRotacao >= 0.625 && this->DirecaoRotacao < 0.875)//Frente
-        this->DirecaoRotacaoProcessada = 0; //Não girar e seguir em frente
-    else
-        this->DirecaoRotacaoProcessada = -999;//Parar movimento
+    // -------- DIREÇÃO DA ROTAÇÃO --------
+    if (this->DirecaoRotacao >= 0.125 && this->DirecaoRotacao < 0.375)
+        this->DirecaoRotacaoProcessada = 2;   // Direita
 
-    if (this->AnguloRotacao  >= 0.1 && this->AnguloRotacao  < 0.3)//0 Seguir em frente
-        this->AnguloRotacaoProcessado = 0;
-    else if (this->AnguloRotacao >= 0.3 && this->AnguloRotacao < 0.5)//5 Lateral
-        this->AnguloRotacaoProcessado = 5;
-    else if (this->AnguloRotacao >= 0.5 && this->AnguloRotacao < 0.7)//15 Diagonal
-        this->AnguloRotacaoProcessado = 15;
-    else if (this->AnguloRotacao >= 0.7 && this->AnguloRotacao < 0.9)//45 Frontal
-        this->AnguloRotacaoProcessado = 45;
-    else
-        this->AnguloRotacaoProcessado = -999;//Parar movimento 
+    else if (this->DirecaoRotacao >= 0.375 && this->DirecaoRotacao < 0.625)
+        this->DirecaoRotacaoProcessada = 0;   // Reto (não rotaciona)
 
-    if (this->DirecaoMovimento >= 0.1 && this->DirecaoMovimento < 0.5)//Frente
-        this->DirecaoMovimentoProcessada = VELOCIDADEDESLOCAMENTO;
-    else if (this->DirecaoMovimento >= 0.5 && this->DirecaoMovimento < 0.9)//Re
-        this->DirecaoMovimentoProcessada = -VELOCIDADEDESLOCAMENTO;
+    else if (this->DirecaoRotacao >= 0.625 && this->DirecaoRotacao < 0.875)
+        this->DirecaoRotacaoProcessada = 1;   // Esquerda
+
+    else
+        this->DirecaoRotacaoProcessada = -999;
+
+
+    // -------- ANGULO DE ROTAÇÃO --------
+    if (this->AnguloRotacao >= 0.1 && this->AnguloRotacao < 0.3)
+        this->AnguloRotacaoProcessado = 0;   // sem rotação
+
+    else if (this->AnguloRotacao >= 0.3 && this->AnguloRotacao < 0.5)
+        this->AnguloRotacaoProcessado = 5;   // lateral
+
+    else if (this->AnguloRotacao >= 0.5 && this->AnguloRotacao < 0.7)
+        this->AnguloRotacaoProcessado = 15;  // diagonal
+
+    else if (this->AnguloRotacao >= 0.7 && this->AnguloRotacao < 0.9)
+        this->AnguloRotacaoProcessado = 45;  // frontal
+
+    else
+        this->AnguloRotacaoProcessado = -999;
+
+
+    // -------- DIREÇÃO DO MOVIMENTO --------
+    if (this->DirecaoMovimento >= 0.1 && this->DirecaoMovimento < 0.5)
+        this->DirecaoMovimentoProcessada = VELOCIDADEDESLOCAMENTO; // frente
+
+    else if (this->DirecaoMovimento >= 0.5 && this->DirecaoMovimento < 0.9)
+        this->DirecaoMovimentoProcessada = -VELOCIDADEDESLOCAMENTO; // ré
+
     else
         this->DirecaoMovimentoProcessada = -999;
-        
 }
+
